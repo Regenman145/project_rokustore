@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-// Import semua halaman yang ingin dituju
+import 'package:project_sepatu/ui/bottomnav.dart' ;// Correct import path for BottomNavScreen
+import 'package:project_sepatu/ui/transaction_page.dart';
 import 'ui/login.dart';
 import 'ui/register.dart';
 import 'ui/dashboard.dart';
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Navigasi Halaman',
       debugShowCheckedModeBanner: false,
-      home: const MenuScreen(),
+      home: const BottomNav(),
     );
   }
 }
