@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/ui/itempage.dart';
+import 'package:project_sepatu/ui/login.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -47,24 +49,49 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children: const [
-                  ProductCard(
-                    name: 'Nike Shoes\nSneakers',
-                    price: '\$189.99',
-                    imagePath: 'assets/shoes1.png',
-                    bgColor: Color(0xFFB2F5EA),
-                  ),
-                  ProductCard(
-                    name: 'Nike Kyrie 1\nLetterman',
-                    price: '\$160.99',
-                    imagePath: 'assets/shoes2.png',
-                    bgColor: Color(0xFF90CDF4),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Mengatur scroll ke arah horizontal
+                child: Row(
+                  children: [
+                    ProductCard(
+                      name: 'Nike Shoes\nSneakers',
+                      price: '\$189.99',
+                      imagePath: 'assets/shoes1.png',
+                      bgColor: const Color(0xFFB2F5EA),
+                      width: 150,
+                      height: 200,
+                      onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) =>  ShoeCard()));
+              },
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => ShoeCard()));
+              },
+                    ),
+                    const SizedBox(width: 16), // Memberikan jarak antar kartu
+                    ProductCard(
+                      name: 'Nike Kyrie 1\nLetterman',
+                      price: '\$160.99',
+                      imagePath: 'assets/shoes2.png',
+                      bgColor: const Color(0xFF90CDF4),
+                      width: 150,
+                      height: 200,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ItemPage(
+                              name: 'Nike Kyrie 1\nLetterman',
+                              price: '\$160.99',
+                              imagePath: 'assets/shoes2.png',
+                            ),
+                          ),
+                        );
+                      }, onPressed: () {  },
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -79,6 +106,9 @@ class ProductCard extends StatelessWidget {
   final String price;
   final String imagePath;
   final Color bgColor;
+  final double width;
+  final double height;
+  final VoidCallback onTap; // Callback untuk navigasi
 
   const ProductCard({
     super.key,
@@ -86,34 +116,83 @@ class ProductCard extends StatelessWidget {
     required this.price,
     required this.imagePath,
     required this.bgColor,
+    required this.onTap, // Tambahkan parameter onTap
+    this.width = 150, // Default lebar kartu
+    this.height = 200, required Null Function() onPressed, // Default tinggi kartu
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Center(
-              child: Image.asset(imagePath),
+    return GestureDetector(
+      onTap: onTap, // Menambahkan navigasi saat kartu diklik
+      child: Container(
+        width: width, // Menggunakan lebar yang diberikan
+        height: height, // Menggunakan tinggi yang diberikan
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Center(
+                child: Image.asset(imagePath),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            price,
-            style: const TextStyle(color: Colors.black54),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              price,
+              style: const TextStyle(color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ItemPage extends StatelessWidget {
+  final String name;
+  final String price;
+  final String imagePath;
+
+  const ItemPage({
+    super.key,
+    required this.name,
+    required this.price,
+    required this.imagePath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Item Details'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(imagePath),
+            const SizedBox(height: 16),
+            Text(
+              name,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              price,
+              style: const TextStyle(fontSize: 20, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
