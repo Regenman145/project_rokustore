@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/ui/bottomnav.dart';
 import 'package:project_sepatu/ui/dashboard.dart';
 
 class ShoeCard extends StatefulWidget {
+  const ShoeCard({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _ShoeCardState createState() => _ShoeCardState();
 }
 
@@ -17,19 +21,17 @@ class _ShoeCardState extends State<ShoeCard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Shoe Details"),
+        title: const Text("Item Details"),
         backgroundColor: const Color(0xFF39E76A),
         elevation: 0,
       ),
       body: Container(
-        width: 280,
+        
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: const Color(0xFF39E76A),
-          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Mengatur agar elemen hanya mengambil ruang yang diperlukan
           children: [
             // Sepatu
             Image.asset('assets/shoes1.png', height: 240),
@@ -164,6 +166,12 @@ class _ShoeCardState extends State<ShoeCard> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Item purchased!")),
                       );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BottomNav(),
+                        ),
+                      );
                     },
                     child: const Text("Buy"),
                   ),
@@ -180,7 +188,7 @@ class _ShoeCardState extends State<ShoeCard> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (_) => const DashboardScreen()));

@@ -1,54 +1,73 @@
 import 'package:flutter/material.dart';
 
 class TransactionPage extends StatelessWidget {
-  const TransactionPage({super.key});
+  final String name;
+  final double price;
+  final String size;
+  final Color color;
+
+  TransactionPage({
+    required this.name,
+    required this.price,
+    required this.size,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction Page'),
+        title: const Text("Transaction Details"),
+        backgroundColor: const Color(0xFF39E76A),
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Recent Transactions',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            Text(
+              "Transaction Summary",
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10, // Jumlah transaksi dummy
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        child: Text(
-                          '${index + 1}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      title: Text('Transaction #${index + 1}'),
-                      subtitle: Text('Details of transaction #${index + 1}'),
-                      trailing: const Text(
-                        '\$100',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                  );
-                },
+            const SizedBox(height: 16),
+            Text(
+              "Item: $name",
+              style: const TextStyle(fontSize: 18),
+            ),
+            Text(
+              "Price: $price",
+              style: const TextStyle(fontSize: 18),
+            ),
+            Text(
+              "Size: $size",
+              style: const TextStyle(fontSize: 18),
+            ),
+            Row(
+              children: [
+                const Text(
+                  "Color: ",
+                  style: TextStyle(fontSize: 18),
+                ),
+                CircleAvatar(
+                  radius: 10,
+                  backgroundColor: color,
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
+              onPressed: () {
+                Navigator.pop(context); // Kembali ke halaman sebelumnya
+              },
+              child: const Text("Back to Shop"),
             ),
           ],
         ),
