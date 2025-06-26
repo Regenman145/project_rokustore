@@ -1,6 +1,21 @@
 # project_sepatu
+Frontend Project POS toko Sepatu
 
-A new Flutter project.
+## Instalasi
+- download file backend terlebih dahulu
+- download file zip ini dan extract
+- setelah extract buka file
+- ketik "flutter pub get"
+- jika error, cek versi flutternya terlebih dahulu
+- happy coding
+
+## team dev
+- Nurdani Dwi Romadon
+- Riyanto
+- Dafa Ahmad Sajangah
+- Ikhwan Aji Ginanjar
+- Azwi Ananta Aditiya
+- Rizki Junianto
 
 ## Getting Started
 
