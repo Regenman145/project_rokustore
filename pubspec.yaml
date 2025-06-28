@@ -72,15 +72,6 @@ flutter:
     - assets/shoes6.png
     - assets/shoes7.png
     - assets/shoes8.png
-    - assets/profile.jpg
-    - assets/banner_shoes.jpg
-    - assets/nike.png
-    - assets/adidas.png
-    - assets/zara.png
-    - assets/puma.png
-    - assets/lv.png
-    - assets/black_shoes.png
-    - assets/blue_shoes.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -1,12 +1,51 @@
 import 'package:flutter/material.dart';
 
 class TransactionPage extends StatelessWidget {
+  const TransactionPage({super.key});  // Tambahkan constructor tanpa parameter
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Transactions"),
+        backgroundColor: const Color(0xFF39E76A),
+        elevation: 0,
+      ),
+      body: ListView(
+        children: [
+          // Contoh item transaksi
+          ListTile(
+            title: Text("Sepatu A"),
+            subtitle: Text("\$100.00"),
+            trailing: Icon(Icons.chevron_right),
+            onTap: () {
+              // Navigasi ke detail transaksi
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => TransactionDetailPage(
+                  name: "Sepatu A",
+                  price: 100.00,
+                  size: "42",
+                  color: Colors.red,
+                ),
+              ));
+            },
+          ),
+          // Tambahkan lebih banyak item transaksi di sini
+        ],
+      ),
+    );
+  }
+}
+
+// Class untuk detail transaksi (dipindahkan dari TransactionPage sebelumnya)
+class TransactionDetailPage extends StatelessWidget {
   final String name;
   final double price;
   final String size;
   final Color color;
 
-  TransactionPage({
+  const TransactionDetailPage({
+    super.key,
     required this.name,
     required this.price,
     required this.size,
@@ -65,7 +104,7 @@ class TransactionPage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.pop(context); // Kembali ke halaman sebelumnya
+                Navigator.pop(context);
               },
               child: const Text("Back to Shop"),
             ),

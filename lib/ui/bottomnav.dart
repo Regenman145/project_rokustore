@@ -16,9 +16,9 @@ class _BottomNavState extends State<BottomNav> {
 
   final List<Widget> _pages = const [
     DashboardScreen(),
-    TransactionPage(), // ganti dengan TransactionScreen()
+    TransactionPage(),
     StockScreen(),
-    ProfilePage(), // ganti dengan ProfileScreen()
+    ProfilePage(),
   ];
 
   @override
