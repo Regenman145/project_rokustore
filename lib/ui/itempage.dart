@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:project_sepatu/ui/bottomnav.dart';
 import 'package:project_sepatu/ui/dashboard.dart';
+import 'package:project_sepatu/ui/transaction_data.dart';
 
 class ShoeCard extends StatefulWidget {
   const ShoeCard({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ShoeCardState createState() => _ShoeCardState();
 }
 
@@ -26,18 +26,17 @@ class _ShoeCardState extends State<ShoeCard> {
         elevation: 0,
       ),
       body: Container(
-        
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF39E76A),
-        ),
+        color: const Color(0xFF39E76A),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sepatu
-            Image.asset('assets/shoes1.png', height: 240),
-      
+            // Gambar sepatu
+            Center(
+              child: Image.asset('assets/shoes1.png', height: 240),
+            ),
             const SizedBox(height: 16),
-      
+
             // Label PRICE dan COLORS
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,9 +51,8 @@ class _ShoeCardState extends State<ShoeCard> {
                 ),
               ],
             ),
-      
             const SizedBox(height: 20),
-      
+
             // Harga dan pilihan warna
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,8 +75,7 @@ class _ShoeCardState extends State<ShoeCard> {
                           radius: 10,
                           backgroundColor: colors[index],
                           child: selectedColorIndex == index
-                              ? const Icon(Icons.check,
-                                  size: 12, color: Colors.black)
+                              ? const Icon(Icons.check, size: 12, color: Colors.black)
                               : null,
                         ),
                       ),
@@ -87,69 +84,56 @@ class _ShoeCardState extends State<ShoeCard> {
                 ),
               ],
             ),
-      
             const SizedBox(height: 20),
-      
+
             // Pilihan ukuran
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: List.generate(sizes.length, (index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedSizeIndex = index;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: selectedSizeIndex == index
-                            ? Colors.black
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        sizes[index].toString(),
-                        style: TextStyle(
-                          color: selectedSizeIndex == index
-                              ? Colors.white
-                              : Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ),
+            const Text(
+              "SIZE",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-      
-            const SizedBox(height: 24),
-      
-            // Tulisan di atas footer
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text(
-                    "Thank you for shopping with us!",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: List.generate(sizes.length, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedSizeIndex = index;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: selectedSizeIndex == index ? Colors.black : Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      sizes[index].toString(),
+                      style: TextStyle(
+                        color: selectedSizeIndex == index ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                ],
+                );
+              }),
+            ),
+            const SizedBox(height: 24),
+
+            // Footer pesan
+            const Center(
+              child: Text(
+                "Thank you for shopping with us!",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
-      
             const SizedBox(height: 24),
-      
+
             // Tombol "Buy" dan "Add Item"
             Row(
               children: [
@@ -163,13 +147,25 @@ class _ShoeCardState extends State<ShoeCard> {
                       ),
                     ),
                     onPressed: () {
+                      // Tambahkan transaksi
+                      TransactionData.addTransaction(
+                        TransactionItem(
+                          name: 'Nike Shoes Sneakers',
+                          price: 189.99,
+                          size: sizes[selectedSizeIndex].toString(),
+                          color: colors[selectedColorIndex],
+                        ),
+                      );
+
+                      // Tampilkan snackbar dan pindah ke halaman transaksi
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Item purchased!")),
                       );
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const BottomNav(),
+                          builder: (_) => const BottomNav(currentIndex: 1),
                         ),
                       );
                     },
@@ -188,12 +184,14 @@ class _ShoeCardState extends State<ShoeCard> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const DashboardScreen()));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Item added to cart!")),
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const DashboardScreen(),
+                        ),
                       );
                     },
                     child: const Text("Add Item"),

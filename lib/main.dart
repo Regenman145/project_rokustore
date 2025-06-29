@@ -43,12 +43,13 @@ class MenuScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const DashboardScreen()));
-              },
-              child: const Text("Dashboard"),
-            ),
+  onPressed: () {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => const BottomNav(currentIndex: 0)));
+  },
+  child: const Text("Dashboard"),
+),
+
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {

@@ -1,43 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/ui/transaction_data.dart';
+import 'package:project_sepatu/ui/bottomnav.dart';
 
 class TransactionPage extends StatelessWidget {
-  const TransactionPage({super.key});  // Tambahkan constructor tanpa parameter
+  final String? itemName;
+  final double? price;
+  final String? paymentMethod;
+
+  const TransactionPage({
+    super.key,
+    this.itemName,
+    this.price,
+    this.paymentMethod,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final transactions = TransactionData.transactions;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Transactions"),
+        title: const Text("Transaksi"),
         backgroundColor: const Color(0xFF39E76A),
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
-      body: ListView(
-        children: [
-          // Contoh item transaksi
-          ListTile(
-            title: Text("Sepatu A"),
-            subtitle: Text("\$100.00"),
-            trailing: Icon(Icons.chevron_right),
-            onTap: () {
-              // Navigasi ke detail transaksi
-              Navigator.push(context, MaterialPageRoute(
-                builder: (_) => TransactionDetailPage(
-                  name: "Sepatu A",
-                  price: 100.00,
-                  size: "42",
-                  color: Colors.red,
-                ),
-              ));
-            },
-          ),
-          // Tambahkan lebih banyak item transaksi di sini
-        ],
-      ),
+      body: transactions.isEmpty
+          ? const Center(child: Text("Belum ada transaksi."))
+          : ListView.builder(
+              itemCount: transactions.length,
+              itemBuilder: (context, index) {
+                final item = transactions[index];
+                return ListTile(
+                  title: Text(item.name),
+                  subtitle: Text("Ukuran: ${item.size} - \$${item.price}"),
+                  trailing: CircleAvatar(backgroundColor: item.color),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TransactionDetailPage(
+                          name: item.name,
+                          price: item.price,
+                          size: item.size,
+                          color: item.color,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }
 
-// Class untuk detail transaksi (dipindahkan dari TransactionPage sebelumnya)
 class TransactionDetailPage extends StatelessWidget {
   final String name;
   final double price;
@@ -56,7 +73,7 @@ class TransactionDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Transaction Details"),
+        title: const Text("Detail Transaksi"),
         backgroundColor: const Color(0xFF39E76A),
         elevation: 0,
       ),
@@ -65,33 +82,15 @@ class TransactionDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Transaction Summary",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            Text("Ringkasan Transaksi", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            Text(
-              "Item: $name",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              "Price: $price",
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(
-              "Size: $size",
-              style: const TextStyle(fontSize: 18),
-            ),
+            Text("Item: $name", style: TextStyle(fontSize: 18)),
+            Text("Harga: \$$price", style: TextStyle(fontSize: 18)),
+            Text("Ukuran: $size", style: TextStyle(fontSize: 18)),
             Row(
               children: [
-                const Text(
-                  "Color: ",
-                  style: TextStyle(fontSize: 18),
-                ),
-                CircleAvatar(
-                  radius: 10,
-                  backgroundColor: color,
-                ),
+                const Text("Warna: ", style: TextStyle(fontSize: 18)),
+                CircleAvatar(radius: 10, backgroundColor: color),
               ],
             ),
             const SizedBox(height: 24),
@@ -99,14 +98,16 @@ class TransactionDetailPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BottomNav(currentIndex: 0)),
+                  (route) => false,
+                );
               },
-              child: const Text("Back to Shop"),
+              child: const Text("Kembali ke Beranda"),
             ),
           ],
         ),
