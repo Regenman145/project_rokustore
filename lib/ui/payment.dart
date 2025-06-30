@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'transaction_page.dart';
+import 'payment_confirmation_page.dart'; // <-- Import baru
 
 class PaymentPage extends StatelessWidget {
   final String itemName;
@@ -38,7 +38,7 @@ class PaymentPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TransactionPage(
+                    builder: (context) => PaymentConfirmationPage(
                       itemName: itemName,
                       price: price,
                       paymentMethod: method["name"],

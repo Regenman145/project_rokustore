@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_sepatu/ui/transaction_data.dart';
 import 'package:project_sepatu/ui/bottomnav.dart';
+import 'package:project_sepatu/ui/payment.dart'; // Pastikan kamu punya halaman payment_page.dart
 
 class TransactionPage extends StatelessWidget {
   final String? itemName;
@@ -94,6 +95,35 @@ class TransactionDetailPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
+
+            // Button Lanjutkan Pembayaran
+            ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.green,
+    padding: const EdgeInsets.symmetric(vertical: 14),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+  ),
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PaymentPage(
+          itemName: name,
+          price: price,
+        ),
+      ),
+    );
+  },
+  child: const Text(
+    "Lanjutkan Pembayaran",
+    style: TextStyle(color: Colors.white),
+  ),
+),
+
+
+            const SizedBox(height: 12),
+
+            // Button Kembali ke Beranda
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -107,7 +137,10 @@ class TransactionDetailPage extends StatelessWidget {
                   (route) => false,
                 );
               },
-              child: const Text("Kembali ke Beranda"),
+              child: const Text(
+                "Kembali ke Beranda",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
