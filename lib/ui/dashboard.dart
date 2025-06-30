@@ -1,9 +1,55 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:project_sepatu/ui/itempage.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+final  PageController _pageController = PageController();
+
+  int _currentPage = 0;
+  
+  final List<String> sliderImages = [
+    'assets/shoes1.png',
+    'assets/shoes2.png',
+    'assets/shoes3.png',
+  ];
+
+Timer? _timer;
+
+@override
+void initState() {
+  super.initState();
+  _startAutoSlide();
+}
+
+void _startAutoSlide() {
+  _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < sliderImages.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
+}
+
+@override
+void dispose() {
+  _timer?.cancel();
+  _pageController.dispose();
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -47,42 +93,44 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 180.0,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 0.9,
-                autoPlayInterval: Duration(seconds: 3),
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-              ),
-              items: [
-                'assets/shoes1.png',
-                'assets/shoes2.png',
-                'assets/shoes3.png',
-              ].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.grey[300],
+            //Corousel Slider
+            SizedBox(
+              height: 200,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: sliderImages.length,
+                onPageChanged: (index){
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index){
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
+                      sliderImages[index],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          i,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
+                  );
+                },),
             ),
-
+             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                sliderImages.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: _currentPage == index ? 12 : 8,
+                  height: _currentPage == index ? 12 : 8,
+                  decoration: BoxDecoration(
+                    color: _currentPage == index ? Colors.blue : Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
             // Container(
             //   height: 160,
             //   decoration: BoxDecoration(
