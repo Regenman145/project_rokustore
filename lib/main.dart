@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_sepatu/ui/bottomnav.dart' ;
+import 'package:project_sepatu/ui/bottomnav.dart';
 import 'package:project_sepatu/ui/itempage.dart';
 import 'package:project_sepatu/ui/transaction_page.dart';
 import 'package:project_sepatu/ui/login.dart';
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Navigasi Halaman',
+      title: 'Rokustores',
       debugShowCheckedModeBanner: false,
       home: LoginScreen(),
     );
@@ -43,13 +43,14 @@ class MenuScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-  onPressed: () {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const BottomNav(currentIndex: 0)));
-  },
-  child: const Text("Dashboard"),
-),
-
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const BottomNav(currentIndex: 0)));
+              },
+              child: const Text("Dashboard"),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
