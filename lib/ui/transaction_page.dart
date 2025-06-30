@@ -22,7 +22,7 @@ class TransactionPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Transaksi"),
-        backgroundColor: const Color(0xFF39E76A),
+        backgroundColor:  Colors.blue,
         elevation: 0,
         automaticallyImplyLeading: false,
       ),

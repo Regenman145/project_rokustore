@@ -8,14 +8,14 @@ class StockScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: Colors.orange,
+          color: Colors.blue,
           padding: const EdgeInsets.all(16),
           width: double.infinity,
           child: const Text('Stock Page', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         ),
         Expanded(
           child: Container(
-            color: Colors.orange.shade100,
+            color: Colors.white,
             child: ListView.builder(
               itemCount: 4,
               itemBuilder: (context, index) {
@@ -24,7 +24,7 @@ class StockScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: Colors.blue,
                       child: Text('${index + 1}'),
                     ),
                     title: Text('Item #${index + 1}'),

@@ -5,7 +5,7 @@ class PaymentPage extends StatelessWidget {
   final String itemName;
   final double price;
 
-  PaymentPage({required this.itemName, required this.price});
+  PaymentPage({super.key, required this.itemName, required this.price});
 
   final List<Map<String, dynamic>> paymentMethods = [
     {"name": "LinkAja", "color": Colors.red},
