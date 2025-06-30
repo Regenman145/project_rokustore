@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_sepatu/ui/bottomnav.dart';
-import 'package:project_sepatu/ui/dashboard.dart';
+import 'package:project_sepatu/ui/cart_data.dart';
 import 'package:project_sepatu/ui/transaction_data.dart';
 
 class ShoeCard extends StatefulWidget {
@@ -184,13 +184,21 @@ class _ShoeCardState extends State<ShoeCard> {
                       ),
                     ),
                     onPressed: () {
+                      CartData.addToCart(
+    TransactionItem(
+      name: 'Nike Shoes Sneakers',
+      price: 189.99,
+      size: sizes[selectedSizeIndex].toString(),
+      color: colors[selectedColorIndex],
+    ),
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Item added to cart!")),
                       );
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const DashboardScreen(),
+                          builder: (_) => const BottomNav(),
                         ),
                       );
                     },

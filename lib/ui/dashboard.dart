@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/ui/bottomnav.dart';
+import 'package:project_sepatu/ui/cart_data.dart';
 import 'package:project_sepatu/ui/itempage.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -54,6 +56,45 @@ void dispose() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+        actions: [
+          ValueListenableBuilder(
+            valueListenable: CartData.cartItems,
+            builder: (context, cart, _) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const BottomNav(currentIndex: 1)),
+                      );
+                    },
+                  ),
+                  if (cart.isNotEmpty)
+                    Positioned(
+                      right: 6,
+                      top: 20,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${cart?.length}',
+                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16.0),
@@ -220,6 +261,10 @@ void dispose() {
       ),
     );
   }
+}
+
+extension on Object? {
+  get length => null;
 }
 
 class ProductCard extends StatelessWidget {
