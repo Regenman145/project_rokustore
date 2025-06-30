@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:project_sepatu/ui/itempage.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -46,29 +47,65 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Container(
-              height: 160,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                image: const DecorationImage(
-                  image: AssetImage('assets/shoes1.png'),
-                  fit: BoxFit.fitHeight,
-                ),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 180.0,
+                autoPlay: true,
+                enlargeCenterPage: true,
+                viewportFraction: 0.9,
+                autoPlayInterval: Duration(seconds: 3),
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
               ),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    color: Colors.red,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: const Text("40% OFF",
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ),
+              items: [
+                'assets/shoes1.png',
+                'assets/shoes2.png',
+                'assets/shoes3.png',
+              ].map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey[300],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          i,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
             ),
+
+            // Container(
+            //   height: 160,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(16),
+            //     image: const DecorationImage(
+            //       image: AssetImage('assets/shoes1.png'),
+            //       fit: BoxFit.fitHeight,
+            //     ),
+            //   ),
+            //   child: Align(
+            //     alignment: Alignment.topLeft,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(12.0),
+            //       child: Container(
+            //         color: Colors.red,
+            //         padding:
+            //             const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            //         child: const Text("40% OFF",
+            //             style: TextStyle(color: Colors.white)),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             const SizedBox(height: 24),
             const Text(
               'Our Products',
