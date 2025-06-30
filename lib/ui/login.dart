@@ -95,12 +95,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 4,
                     ),
                     onPressed: () {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (_) => const BottomNav()),
-  );
-},
-
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const BottomNav()),
+                      );
+                    },
                     child: const Text(
                       'LOGIN',
                       style: TextStyle(
@@ -113,27 +112,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 // Teks Register
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Belum Punya Akun? ',
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // Arahkan ke halaman register nanti
-                      },
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(
-                          color: Color(0xFF0288D1),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     const Text(
+                //       'Belum Punya Akun? ',
+                //       style: TextStyle(color: Colors.black87),
+                //     ),
+                //     GestureDetector(
+                //       onTap: () {
+                //         // Arahkan ke halaman register nanti
+                //       },
+                //       child: const Text(
+                //         'Register',
+                //         style: TextStyle(
+                //           color: Color(0xFF0288D1),
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(height: 16),
               ],
             ),
