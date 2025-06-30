@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/ui/bottomnav.dart';
+import 'package:project_sepatu/ui/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -92,7 +94,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       elevation: 4,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (_) => const BottomNav()),
+  );
+},
+
                     child: const Text(
                       'LOGIN',
                       style: TextStyle(
