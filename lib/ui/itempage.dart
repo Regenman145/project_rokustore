@@ -75,7 +75,8 @@ class _ShoeCardState extends State<ShoeCard> {
                           radius: 10,
                           backgroundColor: colors[index],
                           child: selectedColorIndex == index
-                              ? const Icon(Icons.check, size: 12, color: Colors.black)
+                              ? const Icon(Icons.check,
+                                  size: 12, color: Colors.black)
                               : null,
                         ),
                       ),
@@ -103,15 +104,20 @@ class _ShoeCardState extends State<ShoeCard> {
                     });
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: selectedSizeIndex == index ? Colors.black : Colors.white,
+                      color: selectedSizeIndex == index
+                          ? Colors.black
+                          : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       sizes[index].toString(),
                       style: TextStyle(
-                        color: selectedSizeIndex == index ? Colors.white : Colors.black,
+                        color: selectedSizeIndex == index
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -185,12 +191,12 @@ class _ShoeCardState extends State<ShoeCard> {
                     ),
                     onPressed: () {
                       CartData.addToCart(
-    TransactionItem(
-      name: 'Nike Shoes Sneakers',
-      price: 189.99,
-      size: sizes[selectedSizeIndex].toString(),
-      color: colors[selectedColorIndex],
-    ),
+                        TransactionItem(
+                          name: 'Nike Shoes Sneakers',
+                          price: 189.99,
+                          size: sizes[selectedSizeIndex].toString(),
+                          color: colors[selectedColorIndex],
+                        ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Item added to cart!")),

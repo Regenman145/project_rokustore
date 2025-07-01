@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_sepatu/ui/bottomnav.dart';
-import 'package:project_sepatu/ui/dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +13,74 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool passInvisible = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> login() async {
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email dan password wajib diisi')),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.240.107:8000/api/login'), // Sesuaikan dengan IP backend kamu
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        final token = data['access_token'];
+        final user = data['user'];
+
+        if (token == null || user == null) {
+          throw Exception(
+              'Token atau data user tidak ditemukan di respons API.');
+        }
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+        await prefs.setString('username', user['name'] ?? '');
+        await prefs.setString('email', user['email'] ?? '');
+        await prefs.setString('role', user['role'] ?? '');
+
+        // Navigasi ke halaman utama
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BottomNav()),
+        );
+      } else {
+        final error = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('Login gagal: ${error['message'] ?? 'Unknown error'}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     )),
                 // Username
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    labelText: 'Username',
+                    labelText: 'Email / Username',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -59,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Password
                 TextField(
+                  controller: _passwordController,
                   obscureText: passInvisible,
                   decoration: InputDecoration(
                     filled: true,
@@ -95,10 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 4,
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const BottomNav()),
-                      );
+                      login();
                     },
                     child: const Text(
                       'LOGIN',
