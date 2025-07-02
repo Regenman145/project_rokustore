@@ -1,20 +1,21 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:project_sepatu/ui/bottomnav.dart';
+import 'package:project_sepatu/models/cart_item.dart';
 import 'package:project_sepatu/ui/cart_data.dart';
+import 'package:project_sepatu/ui/cart_page.dart';
 import 'package:project_sepatu/ui/itempage.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+  
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-final  PageController _pageController = PageController();
-
+  final PageController _pageController = PageController();
   int _currentPage = 0;
+  Timer? _timer;
   
   final List<String> sliderImages = [
     'assets/shoes1.png',
@@ -22,74 +23,53 @@ final  PageController _pageController = PageController();
     'assets/shoes3.png',
   ];
 
-Timer? _timer;
+  @override
+  void initState() {
+    super.initState();
+    _startAutoSlide();
+  }
 
-@override
-void initState() {
-  super.initState();
-  _startAutoSlide();
-}
-
-void _startAutoSlide() {
-  _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+  void _startAutoSlide() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
       if (_currentPage < sliderImages.length - 1) {
         _currentPage++;
       } else {
         _currentPage = 0;
       }
-
       _pageController.animateToPage(
         _currentPage,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     });
-}
+  }
 
-@override
-void dispose() {
-  _timer?.cancel();
-  _pageController.dispose();
-  super.dispose();
-}
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         actions: [
-          ValueListenableBuilder(
+          ValueListenableBuilder<List<CartItem>>(
             valueListenable: CartData.cartItems,
             builder: (context, cart, _) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const BottomNav(currentIndex: 1)),
-                      );
-                    },
-                  ),
-                  if (cart.isNotEmpty)
-                    Positioned(
-                      right: 6,
-                      top: 20,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '${cart?.length}',
-                          style: const TextStyle(fontSize: 12, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                ],
+              return Badge(
+                label: Text('${cart.length}'),
+                child: IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CartPage()),
+                    );
+                  },
+                ),
               );
             },
           ),
@@ -134,29 +114,29 @@ void dispose() {
               ),
             ),
             const SizedBox(height: 24),
-            //Corousel Slider
             SizedBox(
               height: 200,
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: sliderImages.length,
-                onPageChanged: (index){
+                onPageChanged: (index) {
                   setState(() {
                     _currentPage = index;
                   });
                 },
-                itemBuilder: (context, index){
+                itemBuilder: (context, index) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: Image.network(
+                    child: Image.asset(
                       sliderImages[index],
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      ),
+                    ),
                   );
-                },),
+                },
+              ),
             ),
-             Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 sliderImages.length,
@@ -172,29 +152,6 @@ void dispose() {
                 ),
               ),
             ),
-            // Container(
-            //   height: 160,
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(16),
-            //     image: const DecorationImage(
-            //       image: AssetImage('assets/shoes1.png'),
-            //       fit: BoxFit.fitHeight,
-            //     ),
-            //   ),
-            //   child: Align(
-            //     alignment: Alignment.topLeft,
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(12.0),
-            //       child: Container(
-            //         color: Colors.red,
-            //         padding:
-            //             const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            //         child: const Text("40% OFF",
-            //             style: TextStyle(color: Colors.white)),
-            //       ),
-            //     ),
-            //   ),
-            // ),
             const SizedBox(height: 24),
             const Text(
               'Our Products',
@@ -219,7 +176,6 @@ void dispose() {
                         MaterialPageRoute(builder: (_) => const ShoeCard()),
                       );
                     },
-                    onPressed: () {},
                   ),
                   const SizedBox(width: 16),
                   ProductCard(
@@ -235,7 +191,6 @@ void dispose() {
                         MaterialPageRoute(builder: (_) => const ShoeCard()),
                       );
                     },
-                    onPressed: () {},
                   ),
                   const SizedBox(width: 16),
                   ProductCard(
@@ -251,7 +206,6 @@ void dispose() {
                         MaterialPageRoute(builder: (_) => const ShoeCard()),
                       );
                     },
-                    onPressed: () {},
                   ),
                 ],
               ),
@@ -263,10 +217,6 @@ void dispose() {
   }
 }
 
-extension on Object? {
-  get length => null;
-}
-
 class ProductCard extends StatelessWidget {
   final String name;
   final String price;
@@ -275,7 +225,6 @@ class ProductCard extends StatelessWidget {
   final double width;
   final double height;
   final VoidCallback onTap;
-  final VoidCallback onPressed;
 
   const ProductCard({
     super.key,
@@ -284,7 +233,6 @@ class ProductCard extends StatelessWidget {
     required this.imagePath,
     required this.bgColor,
     required this.onTap,
-    required this.onPressed,
     this.width = 150,
     this.height = 200,
   });

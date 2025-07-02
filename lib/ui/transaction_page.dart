@@ -1,54 +1,62 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
+import 'package:project_sepatu/models/transaction_item.dart';
 import 'package:project_sepatu/ui/transaction_data.dart';
-import 'package:project_sepatu/ui/bottomnav.dart';
-import 'package:project_sepatu/ui/payment.dart'; // Pastikan kamu punya halaman payment_page.dart
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-class TransactionPage extends StatelessWidget {
-  final String? itemName;
-  final double? price;
-  final String? paymentMethod;
+class TransactionPage extends StatefulWidget {
+  const TransactionPage({super.key});
 
-  const TransactionPage({
-    super.key,
-    this.itemName,
-    this.price,
-    this.paymentMethod,
-  });
+  @override
+  State<TransactionPage> createState() => _TransactionPageState();
+}
+
+class _TransactionPageState extends State<TransactionPage> {
+  final List<TransactionItem> _transactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTransactions();
+  }
+
+  Future<void> _loadTransactions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final transactionData = prefs.getString('transactions');
+    
+    if (transactionData != null) {
+      final List<dynamic> jsonList = json.decode(transactionData);
+      setState(() {
+        _transactions.clear();
+        _transactions.addAll(
+          jsonList.map((item) => TransactionItem.fromJson(item)).toList()
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final transactions = TransactionData.transactions;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Transaksi"),
-        backgroundColor:  Colors.blue,
-        elevation: 0,
-        automaticallyImplyLeading: false,
+        title: const Text('Transaction History'),
       ),
-      body: transactions.isEmpty
-          ? const Center(child: Text("Belum ada transaksi."))
+      body: _transactions.isEmpty
+          ? const Center(child: Text('No transactions yet'))
           : ListView.builder(
-              itemCount: transactions.length,
+              itemCount: _transactions.length,
               itemBuilder: (context, index) {
-                final item = transactions[index];
+                final transaction = _transactions[index];
                 return ListTile(
-                  title: Text(item.name),
-                  subtitle: Text("Ukuran: ${item.size} - \$${item.price}"),
-                  trailing: CircleAvatar(backgroundColor: item.color),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => TransactionDetailPage(
-                          name: item.name,
-                          price: item.price,
-                          size: item.size,
-                          color: item.color,
-                        ),
-                      ),
-                    );
-                  },
+                  title: Text(transaction.name),
+                  subtitle: Text(
+                    '${transaction.quantity}x • ${transaction.size} • \$${transaction.price.toStringAsFixed(2)}',
+                  ),
+                  trailing: Text(
+                    '\$${(transaction.price * transaction.quantity).toStringAsFixed(2)}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 );
               },
             ),
@@ -56,95 +64,15 @@ class TransactionPage extends StatelessWidget {
   }
 }
 
-class TransactionDetailPage extends StatelessWidget {
-  final String name;
-  final double price;
-  final String size;
-  final Color color;
-
-  const TransactionDetailPage({
-    super.key,
-    required this.name,
-    required this.price,
-    required this.size,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Detail Transaksi"),
-        backgroundColor: const Color(0xFF39E76A),
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Ringkasan Transaksi", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            Text("Item: $name", style: TextStyle(fontSize: 18)),
-            Text("Harga: \$$price", style: TextStyle(fontSize: 18)),
-            Text("Ukuran: $size", style: TextStyle(fontSize: 18)),
-            Row(
-              children: [
-                const Text("Warna: ", style: TextStyle(fontSize: 18)),
-                CircleAvatar(radius: 10, backgroundColor: color),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Button Lanjutkan Pembayaran
-            ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.green,
-    padding: const EdgeInsets.symmetric(vertical: 14),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-  ),
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PaymentPage(
-          itemName: name,
-          price: price,
-        ),
-      ),
-    );
-  },
-  child: const Text(
-    "Lanjutkan Pembayaran",
-    style: TextStyle(color: Colors.white),
-  ),
-),
-
-
-            const SizedBox(height: 12),
-
-            // Button Kembali ke Beranda
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const BottomNav(currentIndex: 0)),
-                  (route) => false,
-                );
-              },
-              child: const Text(
-                "Kembali ke Beranda",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+// TransactionData class for managing transactions
+class TransactionData {
+  static Future<void> addTransaction(TransactionItem item) async {
+    final prefs = await SharedPreferences.getInstance();
+    final transactionData = prefs.getString('transactions') ?? '[]';
+    final List<dynamic> existing = json.decode(transactionData);
+    existing.add(item.toJson());
+    await prefs.setString('transactions', json.encode(existing));
   }
+
+  static Future<void> loadTransactions() async {}
 }

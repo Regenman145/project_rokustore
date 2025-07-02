@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:project_sepatu/ui/bottomnav.dart';
+import 'package:project_sepatu/ui/cart_data.dart';
 import 'package:project_sepatu/ui/login.dart';
+import 'package:project_sepatu/ui/transaction_page.dart' show TransactionData;
 import 'ui/register.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CartData.loadCartItems();
+  await TransactionData.loadTransactions();
   runApp(const MyApp());
 }
 

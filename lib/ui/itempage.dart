@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/models/cart_item.dart';
 import 'package:project_sepatu/ui/bottomnav.dart';
 import 'package:project_sepatu/ui/cart_data.dart';
 import 'package:project_sepatu/ui/transaction_data.dart';
+import 'package:project_sepatu/ui/transaction_page.dart';
 
 class ShoeCard extends StatefulWidget {
   const ShoeCard({super.key});
@@ -152,26 +154,28 @@ class _ShoeCardState extends State<ShoeCard> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
+// In the "Add Item" button's onPressed handler, replace the current implementation with:
+
                     onPressed: () {
-                      // Tambahkan transaksi
-                      TransactionData.addTransaction(
-                        TransactionItem(
-                          name: 'Nike Shoes Sneakers',
-                          price: 189.99,
-                          size: sizes[selectedSizeIndex].toString(),
-                          color: colors[selectedColorIndex],
-                        ),
+                      // Create a CartItem
+                      final newItem = CartItem(
+                        productName: 'Nike Shoes Sneakers',
+                        price: 189.99,
+                        size: sizes[selectedSizeIndex].toString(),
+                        quantity: 1,
                       );
 
-                      // Tampilkan snackbar dan pindah ke halaman transaksi
+                      // Add to cart
+                      CartData.addToCart(newItem);
+
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Item purchased!")),
+                        const SnackBar(content: Text("Item added to cart!")),
                       );
 
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const BottomNav(currentIndex: 1),
+                          builder: (_) => const BottomNav(),
                         ),
                       );
                     },
@@ -189,18 +193,22 @@ class _ShoeCardState extends State<ShoeCard> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
+                    // In the onPressed handler for "Add Item" button:
                     onPressed: () {
+                      // Create a CartItem instead of TransactionItem
                       CartData.addToCart(
-                        TransactionItem(
-                          name: 'Nike Shoes Sneakers',
+                        CartItem(
+                          productName: 'Nike Shoes Sneakers',
                           price: 189.99,
                           size: sizes[selectedSizeIndex].toString(),
-                          color: colors[selectedColorIndex],
+                          quantity: 1, // Default quantity
                         ),
                       );
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Item added to cart!")),
                       );
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

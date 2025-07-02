@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:project_sepatu/ui/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String _username = 'Loading...';
+  String _email = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = prefs.getString('username') ?? 'Guest';
+      _email = prefs.getString('email') ?? 'No email';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +45,17 @@ class ProfilePage extends StatelessWidget {
               child: Icon(Icons.person, size: 50, color: Colors.white),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'John Doe',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              _username,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'johndoe@example.com',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+            Text(
+              _email,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 50),
-
-            // Tombol navigasi
-            ProfileButton(
+            _buildProfileButton(
               label: 'Info Akun',
               onPressed: () {
                 Navigator.push(
@@ -44,7 +66,7 @@ class ProfilePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 5),
-            ProfileButton(
+            _buildProfileButton(
               label: 'Tambah User',
               onPressed: () {
                 Navigator.push(
@@ -53,8 +75,8 @@ class ProfilePage extends StatelessWidget {
                 );
               },
             ),
-              const SizedBox(height: 5),
-            ProfileButton(
+            const SizedBox(height: 5),
+            _buildProfileButton(
               label: 'Metode Pembayaran',
               onPressed: () {
                 Navigator.push(
@@ -64,25 +86,27 @@ class ProfilePage extends StatelessWidget {
                 );
               },
             ),
+            const SizedBox(height: 5),
+            _buildProfileButton(
+               label: 'log out',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginScreen()),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-class ProfileButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;
-
-  const ProfileButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildProfileButton({
+    required String label,
+    required VoidCallback onPressed,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: SizedBox(
@@ -91,7 +115,7 @@ class ProfileButton extends StatelessWidget {
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue.shade700,
-            foregroundColor: const Color.fromARGB(255, 5, 5, 5),
+            foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 14),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -104,21 +128,19 @@ class ProfileButton extends StatelessWidget {
   }
 }
 
-// Halaman Info Akun
 class AccountInfoPage extends StatelessWidget {
   const AccountInfoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(backgroundColor: Colors.blue, title: const Text('Info Akun')),
+      appBar: AppBar(
+          backgroundColor: Colors.blue, title: const Text('Info Akun')),
       body: const Center(child: Text('Halaman Info Akun')),
     );
   }
 }
 
-// Halaman Username
 class UsernamePage extends StatefulWidget {
   const UsernamePage({super.key});
 
@@ -133,7 +155,7 @@ class _UsernamePageState extends State<UsernamePage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  String _selectedRole = 'User'; // default role
+  String _selectedRole = 'User';
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -213,8 +235,6 @@ class _UsernamePageState extends State<UsernamePage> {
                     value!.length < 6 ? 'Password minimal 6 karakter' : null,
               ),
               const SizedBox(height: 12),
-
-              // Dropdown Role
               DropdownButtonFormField<String>(
                 value: _selectedRole,
                 items: ['Admin', 'User', 'Kasir']
@@ -230,7 +250,6 @@ class _UsernamePageState extends State<UsernamePage> {
                   });
                 },
               ),
-
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _submitForm,
@@ -248,7 +267,6 @@ class _UsernamePageState extends State<UsernamePage> {
   }
 }
 
-// Halaman Metode Pembayaran
 class PaymentMethodsPage extends StatelessWidget {
   const PaymentMethodsPage({super.key});
 

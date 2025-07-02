@@ -16,6 +16,55 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+
+ @override 
+ void initState() {
+    super.initState();
+    _autoLogin();
+  }
+
+  Future<void> _autoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    
+    
+    if (token != null && token.isNotEmpty) {
+      // Verifikasi token ke backend untuk memastikan masih valid
+      try {
+        final response = await http.get(
+          Uri.parse('http://192.168.100.63:8000/api/validate-token'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          // Jika token valid, langsung navigasi
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const BottomNav()),
+            );
+          }
+        } else {
+          // Jika token tidak valid, hapus dari storage
+          await prefs.remove('token');
+        }
+      } catch (e) {
+        // Jika terjadi error, anggap token tidak valid
+        await prefs.remove('token');
+      }
+    }
+    
+    if (mounted) {
+      setState(() {
+// Set loading false setelah pengecekan
+      });
+    }
+  }
+  
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -27,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final String email = _emailController.text.trim();
     final String password = _passwordController.text.trim();
 
+
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email dan password wajib diisi')),
@@ -37,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.240.107:8000/api/login'), // Sesuaikan dengan IP backend kamu
+            'http://192.168.100.63:8000/api/login'), // Sesuaikan dengan IP backend kamu
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
